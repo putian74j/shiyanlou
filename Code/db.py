@@ -1,6 +1,6 @@
 #filename :db.py
 
-from sqlalchemy import create_engine,Column,Integer,String,ForeignKey
+from sqlalchemy import create_engine,Column,Integer,String,ForeignKey,Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 
@@ -29,7 +29,33 @@ class Course(Base):
 	user = relationship('User',backref=backref('course',cascade='all,delete-orphan'))
 
 	def __repr__(self):
-		return '<Course: {}'.format(self.name)
+		return '<Course: {}>'.format(self.name)
+
+class Lab(Base):
+	__tablename__ = 'lab'
+	id = Column(Integer,ForeignKey('course.id'),primary_key=True)
+
+	name = Column(String(128))
+	course = relationship('Course',backref=backref('lab',uselist=False))
+
+	def __repr__(self):
+		return '<Lab: {}>'.format(self.name)
+
+Rela = Table('rela',Base.metadata,
+		Column('tag_id',Integer,ForeignKey('tag.id'),primary_key = True),
+		Column('course_id',Integer,ForeignKey('course.id'),primary_key=True)
+)
+
+class Tag(Base):
+	__tablename__ = 'tag'
+	id = Column(Integer,primary_key = True)
+	name = Column(String(64),unique = True)
+
+	course = relationship('Course',secondary=Rela,backref='tag')
+
+	def __repr__(self):
+		return '<Tag: {}>'.format(self.name)
+
 
 if __name__ == '__main__':
 	Base.metadata.create_all()
