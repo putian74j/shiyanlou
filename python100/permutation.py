@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+#import sys
+
 class Permutations(object):
 
     def is_permutation(self, str1, str2):
@@ -8,4 +11,10 @@ class Permutations(object):
         else:
             s1 = list(str1)
             s2 = list(str2)
-            return (s1.sort() == s2.sort())
+            s1.sort()
+            s2.sort()
+            return s1 == s2
+
+#p = Permutations()
+
+#p.is_permutation(sys.argv[1],sys.argv[2])
